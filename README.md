@@ -12,11 +12,11 @@ Install gorm ORM
 		go get github.com/jinzhu/gorm/dialects/mysql
 
 
-####Setting Env
+#### Setting Env
 
 Buat file .env berdasarkan file ENVIRONMENT_EXAMPLE
 
-####Membuat Model
+#### Membuat Model
 Untuk membuat model , masuk ke folder model dian buat file namamodel.go, Lihat contoh 
 
 	package model
@@ -42,7 +42,7 @@ Untuk membuat model , masuk ke folder model dian buat file namamodel.go, Lihat c
 	
 untuk lebih jelasnya silahkan baca documentasi [Gorm Model](http://doc.gorm.io/models.html) 
 
-####Setting Migrate
+#### Setting Migrate
 
 Untuk setting automigrate bisa di lihat pada main.go pada fungsi AutoMigrate
 
@@ -55,7 +55,7 @@ Untuk setting automigrate bisa di lihat pada main.go pada fungsi AutoMigrate
 	fmt.Println("[::] Migration Databases Done")
 	}
 	
-####Setting Route
+####  Setting Route
 untuk membuat router silahkan ke folder router ke function Routers
 
 	func Routers() {
@@ -113,6 +113,6 @@ Untuk lebih jelasnya silahkan baca documentasi [iris router](https://docs.iris-g
 
 
 
-####Contact
+#### Contact
 email : hrahmatwahyu@gmail.com, LINE : rahmatwahyuhadi, WA : 6285205039835
 
