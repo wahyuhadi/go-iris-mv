@@ -4,6 +4,7 @@ import (
 	"github.com/kataras/iris"
 	"go-iris-mv/config"
 	"go-iris-mv/controller"
+	"go-iris-mv/middleware"
 	"os"
 )
 
@@ -12,7 +13,7 @@ func Routers() {
 	inDB := &controller.InDB{DB: db }
 	app := iris.Default()
 	// for / endpoint
-	app.Get("/", controller.WelcomeController)
+	app.Get("/", middleware.WelcomeMiddleware ,controller.WelcomeController)
 
 	// example group: v1
 	v1:= app.Party("/v1")
