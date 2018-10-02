@@ -13,7 +13,12 @@ func Routers() {
 	inDB := &controller.InDB{DB: db }
 	app := iris.Default()
 	// for / endpoint
-	app.Get("/", middleware.WelcomeMiddleware ,controller.WelcomeController)
+	app.Get("/",
+		middleware.WelcomeMiddleware ,
+		middleware.SecondMiddleware,
+		controller.WelcomeController,
+	)
+
 
 	// example group: v1
 	v1:= app.Party("/v1")
