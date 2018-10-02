@@ -1,0 +1,26 @@
+package config
+
+import (
+	"log"
+	"os"
+
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+)
+
+var gormConn *gorm.DB
+
+func GetDatabaseConnection() *gorm.DB { // Check Connection Status
+	if gormConn != nil && gormConn.DB() != nil && gormConn.DB().Ping() == nil {
+		return gormConn
+	}
+
+	conn, err := gorm.Open(os.Getenv("DB_DIALECT"), os.Getenv("DB_CONNECTION")) // Connection to database
+	if err != nil {
+		log.Fatal("Could not connect to the database")
+	}
+
+	gormConn = conn
+
+	return gormConn
+}

@@ -1,0 +1,13 @@
+ENVIRONMENT="development"
+
+
+# API Information
+API_TITLE="TEST"
+API_VERSION="0.0.0"
+API_PORT=3000
+
+
+# Database configurations
+DB_DIALECT="mysql" // sesuaikan
+DB_CONNECTION="<username>:<password>@tcp(localhost:3306)/<databasename>?charset=utf8&parseTime=True"
+
