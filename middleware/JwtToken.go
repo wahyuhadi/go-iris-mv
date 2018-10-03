@@ -44,7 +44,7 @@ func DecodeTokenUser(ctx iris.Context) {
 
 	claims := decode.Claims.(jwt.MapClaims)
 	for key, val := range claims {
-		ctx.Values().SetImmutable(key, val)
+		ctx.Values().SetImmutable(key, val) //value  number has been change with float64
 	}
 
 	ctx.Next()

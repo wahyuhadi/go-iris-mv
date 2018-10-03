@@ -221,10 +221,10 @@ func (idb *InDB) CreateProfile(ctx iris.Context) {
 		profile model.Profile
 	)
 
-	id := ctx.Values().Get("id") // get id from middleware
+	//id := ctx.Values().Get("id") // get id from middleware
 	ctx.ReadJSON(&profile)
 
-	profile.UserID = id
+	profile.UserID = 1 // need fixing how to change float64 to int
 	idb.DB.Create(&profile)
 	ctx.JSON(iris.Map{
 		"error":  "false",

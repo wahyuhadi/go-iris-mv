@@ -1,16 +1,18 @@
 package router
 
 import (
-	"github.com/kataras/iris"
 	"go-iris-mv/config"
 	"go-iris-mv/controller"
 	"go-iris-mv/middleware"
 	"os"
+
+	"github.com/kataras/iris"
 )
 
 func Routers() {
 	db := config.GetDatabaseConnection()
 	inDB := &controller.InDB{DB: db}
+	defer inDB.DB.Close()
 	app := iris.Default()
 	// for / endpoint
 	app.Get("/",
