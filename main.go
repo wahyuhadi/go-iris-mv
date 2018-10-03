@@ -15,7 +15,8 @@ import (
 func DBMigrate() { // auto migration
 	fmt.Println("[::] Migration Databases .....")
 	db := config.GetDatabaseConnection() // check connection to Databases
-	db.AutoMigrate(&model.User{})        // Migrate Model
+	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Profile{})  // Migrate Model
 	fmt.Println("[::] Migration Databases Done")
 }
 
@@ -42,5 +43,5 @@ func main() {
 	})
 	app.Use(requestLogger)
 	router.Routers()
-
 }
+

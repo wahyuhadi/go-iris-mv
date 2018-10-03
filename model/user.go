@@ -6,10 +6,9 @@ import (
 
 type User struct {
 	ID int `json:"id" gorm:"primary_key"`
-
-	FirstName string     `json:"firstname, omitempty" gorm:"not null; type:varchar(100)"`
-	LastName  string     `json:"lastname, omitempty" gorm:"not null; type:varchar(100)"`
 	Email     string     `json:"email, omitempty" gorm:"not null; type:varchar(100)"`
+	Password     string     `json:"password, omitempty" gorm:"not null; type:varchar(100)"`
+	Role string `json:"role, omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
 	CreatedAt *time.Time `json:"createdAt, omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt, omitempty"`
 	DeletedAt *time.Time `json:"deletedAt, omitempty" sql:"index"`
