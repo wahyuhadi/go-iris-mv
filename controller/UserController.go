@@ -259,10 +259,11 @@ func CreateProfile(ctx iris.Context) {
 		profile model.Profile
 	)
 
-	//id := ctx.Values().Get("id") // get id from middleware
+	id := ctx.Values().Get("id") // get id from middleware
 	ctx.ReadJSON(&profile)
-
-	profile.UserID = 1 // need fixing how to change float64 to int
+	var userId int64
+	userId = int64(id.(float64)) // convertion type float64 to int64
+	profile.UserID = userId
 	db := config.GetDatabaseConnection()
 	defer db.Close()
 	db.Create(&profile)
