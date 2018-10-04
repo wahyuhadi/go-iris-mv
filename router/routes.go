@@ -23,7 +23,7 @@ func Routers() {
 		v1.Post("/user", controller.CreateUser)
 		v1.Post("/user/login", controller.Login)
 		v1.Get("/user", controller.GetAll)
-		v1.Get("/user/{id : int}", controller.GetById )
+		v1.Get("/user/{id : int}", controller.GetById)
 		v1.Put("/user/{id : int}", controller.UpdateUser)
 		v1.Delete("/user/{id : int}", controller.DeleteUser)
 	}
@@ -31,6 +31,12 @@ func Routers() {
 	profile := app.Party("/v1/profile")
 	{
 		profile.Post("/", middleware.DecodeTokenUser, controller.CreateProfile)
+
+	}
+
+	http := app.Party("/v1/http")
+	{
+		http.Get("/", controller.GetHttpReq)
 
 	}
 
