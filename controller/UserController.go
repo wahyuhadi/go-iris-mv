@@ -48,6 +48,19 @@ func Login(ctx iris.Context) {
 			"status":  iris.StatusBadRequest,
 			"message": "Invalid login credentials. Please try again",
 		}
+		ctx.JSON(result)
+		return
+	}
+
+	// if email not found
+	if user.ID == 0 {
+		result = iris.Map{
+			"error":   "true",
+			"status":  iris.StatusBadRequest,
+			"message": "Invalid login credentials. Please try again",
+		}
+		ctx.JSON(result)
+		return
 	}
 
 	if user.Role == "admin" {
