@@ -1,7 +1,6 @@
 package router
 
 import (
-	"go-iris-mv/config"
 	"go-iris-mv/controller"
 	"go-iris-mv/middleware"
 	"os"
@@ -10,9 +9,6 @@ import (
 )
 
 func Routers() {
-	db := config.GetDatabaseConnection()
-	inDB := &controller.InDB{DB: db}
-	defer inDB.DB.Close()
 	app := iris.Default()
 	// for / endpoint
 	app.Get("/",
@@ -24,17 +20,17 @@ func Routers() {
 	// example group: v1
 	v1 := app.Party("/v1")
 	{
-		v1.Post("/user", inDB.CreteUser)
-		v1.Post("/user/login", inDB.Login)
-		v1.Get("/user", inDB.GetAll)
-		v1.Get("/user/{id : int}", inDB.GetById)
-		v1.Put("/user/{id : int}", inDB.UpdateUser)
-		v1.Delete("/user/{id : int}", inDB.DeleteUser)
+		v1.Post("/user", controller.CreateUser)
+		v1.Post("/user/login", controller.Login)
+		v1.Get("/user", controller.GetAll)
+		v1.Get("/user/{id : int}", controller.GetById )
+		v1.Put("/user/{id : int}", controller.UpdateUser)
+		v1.Delete("/user/{id : int}", controller.DeleteUser)
 	}
 
 	profile := app.Party("/v1/profile")
 	{
-		profile.Post("/", middleware.DecodeTokenUser, inDB.CreateProfile)
+		profile.Post("/", middleware.DecodeTokenUser, controller.CreateProfile)
 
 	}
 

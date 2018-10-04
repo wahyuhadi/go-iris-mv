@@ -46,6 +46,5 @@ func DecodeTokenUser(ctx iris.Context) {
 	for key, val := range claims {
 		ctx.Values().SetImmutable(key, val) //value  number has been change with float64
 	}
-
-	ctx.Next()
+	ctx.Next() // store value to next handler
 }

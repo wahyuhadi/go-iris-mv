@@ -15,6 +15,7 @@ import (
 func DBMigrate() { // auto migration
 	fmt.Println("[::] Migration Databases .....")
 	db := config.GetDatabaseConnection() // check connection to Databases
+	defer db.Close()
 	db.AutoMigrate(&model.User{})
 	db.AutoMigrate(&model.Profile{})  // Migrate Model
 	fmt.Println("[::] Migration Databases Done")

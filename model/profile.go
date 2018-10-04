@@ -1,11 +1,8 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
 type Profile struct {
-	//gorm.Model
 	ID        int        `json:"id" gorm:"primary_key"`
 	UserID    int        `json:"user_id, omitempty" gorm:"not null"`
 	Address   string     `json:"address, omitempty" gorm:"not null; type:varchar(100)"`
@@ -15,8 +12,4 @@ type Profile struct {
 	UpdatedAt *time.Time `json:"updatedAt, omitempty"`
 	DeletedAt *time.Time `json:"deletedAt, omitempty" sql:"index"`
 	User      User       `gorm:"foreignkey:UserRefer"`
-}
-
-func (Profile) TableName() string {
-	return "profiles" // table name when succesfully migrate
 }
