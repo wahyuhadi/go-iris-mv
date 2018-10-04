@@ -104,16 +104,14 @@ func Login(ctx iris.Context) {
 // Get all user
 func GetAll(ctx iris.Context) {
 	var (
-		user    []model.User // [] for array result
-		profile []model.Profile
-		result  iris.Map
+		user   []model.User // [] for array result
+		result iris.Map
 	)
 
 	ctx.ReadJSON(&user)
 	db := config.GetDatabaseConnection()
 	defer db.Close()
-	db.Find(&user).Related(&profile) // relation to profile, You can fix this ??
-
+	db.Preload("Profile").Find(&user) // relation to profile, You can fix this ??
 	if len(user) <= 0 {
 		result = iris.Map{
 			"error":  "false",
