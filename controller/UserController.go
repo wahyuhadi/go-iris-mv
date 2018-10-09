@@ -1,14 +1,18 @@
 package controller
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/kataras/iris"
+	"encoding/json"
 	"go-iris-mv/config"
 	"go-iris-mv/model"
 	"go-iris-mv/service"
-	"golang.org/x/crypto/bcrypt"
 	"os"
+	"strings"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/fatih/structs"
+	"github.com/kataras/iris"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Create user
@@ -149,12 +153,22 @@ func GetById(ctx iris.Context) {
 	var (
 		user   model.User
 		result iris.Map
+		data   map[string]interface{}
 	)
 
 	id := ctx.Params().Get("id")
 	db := config.GetDatabaseConnection()
 	defer db.Close()
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.Where("id = ?", id).Preload("Profile").First(&user).Error
+	mapstruct := structs.Map(&user)
+	delete(mapstruct, "Profile")
+	delete(mapstruct, "Password")
+	mar, _ := json.Marshal(mapstruct)
+	byt := []byte(strings.ToLower(string(mar)))
+	if err := json.Unmarshal(byt, &data); err != nil {
+		panic(err)
+	}
+
 	if err != nil {
 		result = iris.Map{
 			"error":  "true",
@@ -167,6 +181,7 @@ func GetById(ctx iris.Context) {
 			"error":  "false",
 			"status": iris.StatusOK,
 			"result": user,
+			"data":   data,
 			"count":  1,
 		}
 	}
