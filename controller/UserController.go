@@ -2,9 +2,9 @@ package controller
 
 import (
 	"encoding/json"
-	"go-iris-mv/config"
-	"go-iris-mv/model"
-	"go-iris-mv/service"
+	"../go-iris-mv/config"
+	"../go-iris-mv/model"
+	"../go-iris-mv/service"
 	"os"
 	"strings"
 	"time"
