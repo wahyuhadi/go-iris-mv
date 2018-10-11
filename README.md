@@ -5,6 +5,7 @@ Install dep
 
 		$ curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 		$ dep ensure -update
+		$ rm -irf vendor/ # There's still bug on go dep for macOS, you should omit / remove completely the vendor directory
 
 
 #### Setting Env
