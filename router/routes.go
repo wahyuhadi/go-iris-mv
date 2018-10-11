@@ -1,8 +1,8 @@
 package router
 
 import (
-	"go-iris-mv/controller"
-	"go-iris-mv/middleware"
+	"../go-iris-mv/controller"
+	"../go-iris-mv/middleware"
 	"os"
 
 	"github.com/kataras/iris"

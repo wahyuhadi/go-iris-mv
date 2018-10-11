@@ -1,11 +1,11 @@
 package main
 
 import (
+	"../go-iris-mv/config"
+	"../go-iris-mv/model"
+	"../go-iris-mv/router"
 	"fmt"
 	"github.com/joho/godotenv"
-	"go-iris-mv/config"
-	"go-iris-mv/model"
-	"go-iris-mv/router"
 	"os"
 
 	"github.com/kataras/iris"
@@ -17,7 +17,7 @@ func DBMigrate() { // auto migration
 	db := config.GetDatabaseConnection() // check connection to Databases
 	defer db.Close()
 	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Profile{})  // Migrate Model
+	db.AutoMigrate(&model.Profile{}) // Migrate Model
 	fmt.Println("[::] Migration Databases Done")
 }
 
@@ -45,4 +45,3 @@ func main() {
 	app.Use(requestLogger)
 	router.Routers()
 }
-
