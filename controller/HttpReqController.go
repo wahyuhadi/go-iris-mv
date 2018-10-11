@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kataras/iris"
-	"../go-iris-mv/service"
+	"../service"
 	"log"
 )
 
