@@ -10,5 +10,5 @@ type User struct {
 	CreatedAt *time.Time `json:"createdAt, omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt, omitempty"`
 	DeletedAt *time.Time `json:"deletedAt, omitempty" sql:"index"`
-	Profile   Profile    //`gorm:"foreignkey:UserID;association_foreignkey:Refer"` // One-To-Many relationship (has many - use Email's UserID as foreign key)
+	Profile   Profile    `json:"profile"` //`gorm:"foreignkey:UserID;association_foreignkey:Refer"` // One-To-Many relationship (has many - use Email's UserID as foreign key)
 }
