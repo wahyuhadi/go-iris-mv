@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"../go-iris-mv/config"
 	"../go-iris-mv/model"
 	"../go-iris-mv/router"
-	"fmt"
 	"github.com/joho/godotenv"
-	"os"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
@@ -24,7 +25,7 @@ func DBMigrate() { // auto migration
 func InitApps() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		fmt.Println("[-] Error loading .env file")
 	}
 	fmt.Println("[::] APP Running on Port " + os.Getenv("API_PORT"))
 }

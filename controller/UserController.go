@@ -121,8 +121,19 @@ func Login(ctx iris.Context) {
 
 // Get all user
 func GetAll(ctx iris.Context) {
+
+	type User struct {
+		ID        int64         `json:"id" gorm:"primary_key"`
+		Role      string        `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
+		Email     string        `json:"email" gorm:"not null; size:255"`
+		CreatedAt *time.Time    `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time    `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time    `json:"deletedAt,omitempty" sql:"index"`
+		Profile   model.Profile `json:"profile"` // Get from model->Profile
+	}
+
 	var (
-		user   []model.User // [] for array result
+		user   []User // [] for array result
 		result iris.Map
 	)
 
@@ -278,7 +289,7 @@ func CreateProfile(ctx iris.Context) {
 	id := ctx.Values().Get("id") // get id from middleware
 	ctx.ReadJSON(&profile)
 	var userID int64
-	userId = int64(id.(float64)) // convertion type float64 to int64
+	userID = int64(id.(float64))
 	profile.UserID = userID
 	db := config.GetDatabaseConnection()
 	defer db.Close()
