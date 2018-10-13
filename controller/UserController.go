@@ -2,12 +2,13 @@ package controller
 
 import (
 	"encoding/json"
-	"../config"
-	"../model"
-	"../service"
 	"os"
 	"strings"
 	"time"
+
+	"../config"
+	"../model"
+	"../service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/fatih/structs"
@@ -276,9 +277,9 @@ func CreateProfile(ctx iris.Context) {
 
 	id := ctx.Values().Get("id") // get id from middleware
 	ctx.ReadJSON(&profile)
-	var userId int64
+	var userID int64
 	userId = int64(id.(float64)) // convertion type float64 to int64
-	profile.UserID = userId
+	profile.UserID = userID
 	db := config.GetDatabaseConnection()
 	defer db.Close()
 	db.Create(&profile)

@@ -1,5 +1,7 @@
 # MVC iris golang starter
 
+![](https://iris-go.com/images/icon.svg) 
+
 #### Depedency
 Install dep
 
