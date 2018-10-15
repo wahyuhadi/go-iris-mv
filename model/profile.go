@@ -1,8 +1,14 @@
 package model
 
-import "time"
+import (
+	"time"
+	"github.com/mochadwi/go-iris-mv/_vendor-20181011214628/github.com/jinzhu/gorm"
+)
 
-// Profile model
+//go:generate goqueryset -in profile.go
+
+// Profile struct represent profile model. Next line (gen:qs) is needed to autogenerate ProfileQuerySet.
+// gen:qs
 type Profile struct {
 	ID        int64      `json:"id" gorm:"primary_key"`
 	UserID    int64      `json:"user_id,omitempty" gorm:"type:bigint REFERENCES users(id)"`
