@@ -2,7 +2,6 @@ package model
 
 import (
 	"time"
-	"github.com/mochadwi/go-iris-mv/_vendor-20181011214628/github.com/jinzhu/gorm"
 )
 
 //go:generate goqueryset -in profile.go
