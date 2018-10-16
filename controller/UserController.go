@@ -1,9 +1,7 @@
 package controller
 
 import (
-	"encoding/json"
 	"os"
-	"strings"
 	"time"
 
 	"../config"
@@ -11,7 +9,6 @@ import (
 	"../service"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/fatih/structs"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -136,24 +133,21 @@ func GetAllUser(ctx iris.Context) {
 		result iris.Map
 	)
 
-	if err := service.GetAll(&users); err != nil {
+	err := service.GetAll(&users)
+	if err != nil {
 		result = iris.Map{
 			"error":  "true",
 			"status": iris.StatusBadRequest,
+			"result": nil,
+		}
+	} else {
+		result = iris.Map{
+			"error":  "false",
+			"status": iris.StatusOK,
 			"result": users,
 			"count":  len(users),
 		}
 	}
-
-	result = iris.Map{
-		"error":  "false",
-		"status": iris.StatusOK,
-		"result": users,
-		"count":  len(users),
-	}
-
-	// }
-
 	ctx.JSON(result)
 	return
 }
@@ -172,29 +166,26 @@ func GetAll(ctx iris.Context) {
 	}
 
 	var (
-		user   []User // [] for array result
+		users  []User // [] for array result
 		result iris.Map
 	)
 
-	ctx.ReadJSON(&user)
-	db := config.GetDatabaseConnection()
-	defer db.Close()
-	db.Preload("Profile").Find(&user) // relation to profile, You can fix this ??
-	if len(user) <= 0 {
+	err := service.GetAll(&users)
+	if err != nil {
 		result = iris.Map{
-			"error":  "false",
-			"status": iris.StatusOK,
+			"error":  "true",
+			"status": iris.StatusBadRequest,
 			"result": nil,
-			"count":  0,
 		}
 	} else {
 		result = iris.Map{
 			"error":  "false",
 			"status": iris.StatusOK,
-			"result": user,
-			"count":  len(user),
+			"result": users,
+			"count":  len(users),
 		}
 	}
+
 	ctx.JSON(result)
 	return
 }
@@ -202,37 +193,23 @@ func GetAll(ctx iris.Context) {
 // Get user by id
 func GetById(ctx iris.Context) {
 	var (
-		user   model.User
+		users  model.User
 		result iris.Map
-		data   map[string]interface{}
 	)
 
 	id := ctx.Params().Get("id")
-	db := config.GetDatabaseConnection()
-	defer db.Close()
-	err := db.Where("id = ?", id).Preload("Profile").First(&user).Error
-	mapstruct := structs.Map(&user)
-	delete(mapstruct, "Profile")
-	delete(mapstruct, "Password")
-	mar, _ := json.Marshal(mapstruct)
-	byt := []byte(strings.ToLower(string(mar)))
-	if err := json.Unmarshal(byt, &data); err != nil {
-		panic(err)
-	}
-
+	err := service.GetById(&users, id)
 	if err != nil {
 		result = iris.Map{
 			"error":  "true",
 			"status": iris.StatusBadRequest,
-			"result": err.Error(),
-			"count":  0,
+			"result": nil,
 		}
 	} else {
 		result = iris.Map{
 			"error":  "false",
 			"status": iris.StatusOK,
-			"result": user,
-			"data":   data,
+			"result": users,
 			"count":  1,
 		}
 	}

@@ -20,6 +20,7 @@ func GetDatabaseConnection() *gorm.DB { // Check Connection Status
 	if err != nil {
 		log.Fatal("Could not connect to the database")
 	}
+	conn.LogMode(true)
 
 	gormConn = conn
 	return gormConn
