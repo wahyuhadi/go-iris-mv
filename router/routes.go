@@ -23,6 +23,7 @@ func Routers() {
 		v1.Post("/user", controller.CreateUser)
 		v1.Post("/user/login", controller.Login)
 		v1.Get("/user", controller.GetAll)
+		v1.Get("/get_all", controller.GetAllUser)
 		v1.Get("/user/{id : int}", controller.GetById)
 		v1.Put("/user/{id : int}", controller.UpdateUser)
 		v1.Delete("/user/{id : int}", controller.DeleteUser)
