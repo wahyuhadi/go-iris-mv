@@ -119,6 +119,35 @@ func Login(ctx iris.Context) {
 	return
 }
 
+// GetAllUser using goqueryset
+func GetAllUser(ctx iris.Context) {
+	var (
+		users  []model.User
+		result iris.Map
+	)
+
+	db := config.GetDatabaseConnection()
+	defer db.Close()
+	if err := model.NewUserQuerySet(db).All(&users); err != nil {
+		result = iris.Map{
+			"error":  "true",
+			"status": iris.StatusBadRequest,
+			"result": err.Error(),
+			"count":  0,
+		}
+	} else {
+		result = iris.Map{
+			"error":  "true",
+			"status": iris.StatusOK,
+			"result": users,
+			"count":  len(users),
+		}
+
+	}
+
+	return
+}
+
 // Get all user
 func GetAll(ctx iris.Context) {
 
