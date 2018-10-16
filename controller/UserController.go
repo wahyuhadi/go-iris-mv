@@ -121,33 +121,41 @@ func Login(ctx iris.Context) {
 
 // GetAllUser using goqueryset
 func GetAllUser(ctx iris.Context) {
+
+	type User struct {
+		ID        int64         `json:"id" gorm:"primary_key"`
+		Role      string        `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
+		Email     string        `json:"email" gorm:"not null; size:255"`
+		CreatedAt *time.Time    `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time    `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time    `json:"deletedAt,omitempty" sql:"index"`
+		Profile   model.Profile `json:"profile"` // Get from model->Profile
+	}
 	var (
-		users model.User
-		// result iris.Map
+		users  []User
+		result iris.Map
 	)
 
-	service.GetAll(users)
-	// db := config.GetDatabaseConnection()
-	// defer db.Close()
-	// if err := model.NewUserQuerySet(db).All(&users); err != nil {
-	// 	result = iris.Map{
-	// 		"error":  "true",
-	// 		"status": iris.StatusBadRequest,
-	// 		"result": err.Error(),
-	// 		"count":  0,
-	// 	}
-	// } else {
-	// 	result = iris.Map{
-	// 		"error":  "true",
-	// 		"status": iris.StatusOK,
-	// 		"result": users,
-	// 		"count":  len(users),
-	// 	}
+	if err := service.GetAll(&users); err != nil {
+		result = iris.Map{
+			"error":  "true",
+			"status": iris.StatusBadRequest,
+			"result": users,
+			"count":  len(users),
+		}
+	}
+
+	result = iris.Map{
+		"error":  "false",
+		"status": iris.StatusOK,
+		"result": users,
+		"count":  len(users),
+	}
 
 	// }
 
-	// ctx.JSON(result)
-	// return
+	ctx.JSON(result)
+	return
 }
 
 // Get all user
