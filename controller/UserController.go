@@ -145,6 +145,7 @@ func GetAllUser(ctx iris.Context) {
 
 	}
 
+	ctx.JSON(result)
 	return
 }
 
