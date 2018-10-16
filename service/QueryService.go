@@ -5,19 +5,48 @@ import (
 	"go-iris-mv/config"
 )
 
-// ini untuk proses query
-// ini get all harusnya return slice of interface, right?
-// func GetAll(obj interface{}) (interface{}, error) {
-// 	db := config.GetDatabaseConnection()
-// 	defer db.Close()
-// 	db.Find(obj.(model.User))
-// 	return obj, fmt.Errorf("exception throws")
-// }
-func GetAll(obj interface{}) error {
+// service ini untuk melakukan sebuah query
+
+// fungsi untul get all user
+func GetAll(model interface{}) error {
 	db := config.GetDatabaseConnection()
 	defer db.Close()
-	if err := db.Debug().Find(obj).Error; err != nil {
+	err := db.Find(model).Error
+	if err != nil {
 		return errors.New("Could not find the user")
+	}
+	return nil
+}
+
+// fungsi untuk get user by id
+func GetById(model interface{}, id string) error {
+	db := config.GetDatabaseConnection()
+	defer db.Close()
+	err := db.Find(model, id).Error
+	if err != nil {
+		return errors.New("Could not find the user")
+	}
+	return nil
+}
+
+// function get where
+func GetWithCondition(model interface{}, condition string) error {
+	db := config.GetDatabaseConnection()
+	defer db.Close()
+	err := db.Where(condition).Find(model).Error
+	if err != nil {
+		return errors.New("Not Found")
+	}
+	return nil
+}
+
+// Update data
+func UpdateData(model interface{}, newData interface{}) error {
+	db := config.GetDatabaseConnection()
+	defer db.Close()
+	err := db.Model(model).Updates(newData).Error
+	if err != nil {
+		return errors.New("Failed to Update data")
 	}
 	return nil
 }
