@@ -20,8 +20,8 @@ func Routers() {
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 		On:       true,
 		DocTitle: "Iris",
-		DocPath:  "apidocs/apidoc.html",
-		BaseUrls: map[string]string{"Production": "", "Staging": ""},
+		DocPath:  "apidocs/index.html",
+		BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
 	})
 	app.Use(irisyaag.New()) // <- IMPORTANT, reg
 

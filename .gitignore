@@ -1,4 +1,6 @@
 .env
+.html
+.json
 .idea/
 gomon_spawn
 .vscode/
