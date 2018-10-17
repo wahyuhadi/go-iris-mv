@@ -377,7 +377,6 @@
     "github.com/dgrijalva/jwt-go",
     "github.com/jinzhu/gorm",
     "github.com/jinzhu/gorm/dialects/mysql",
-    "github.com/jinzhu/inflection",
     "github.com/kataras/iris",
     "golang.org/x/crypto/bcrypt",
   ]

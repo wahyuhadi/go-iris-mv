@@ -1,15 +1,17 @@
 package router
 
 import (
+	"os"
+
 	"../controller"
 	"../middleware"
-	"os"
 
 	"github.com/kataras/iris"
 )
 
 func Routers() {
-	app := iris.Default()
+	app := iris.New()
+
 	// for / endpoint
 	app.Get("/",
 		middleware.WelcomeMiddleware,
