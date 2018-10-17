@@ -25,6 +25,7 @@ gomon_spawn
 /vendor/
 /*vendor*/
 /Godeps/
-
+/apidocs/
+/*apidocs*/
 
 # End of https://www.gitignore.io/api/go
