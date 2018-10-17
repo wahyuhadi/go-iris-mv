@@ -7,17 +7,11 @@ import (
 	"../go-iris-mv/config"
 	"../go-iris-mv/model"
 	"../go-iris-mv/router"
-	"github.com/betacraft/yaag/irisyaag"
-	"github.com/betacraft/yaag/yaag"
 	"github.com/joho/godotenv"
 
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/middleware/logger"
 )
-
-type myXML struct {
-	Result string `xml:"result"`
-}
 
 func DBMigrate() { // auto migration
 	fmt.Println("[::] Migration Databases .....")
@@ -41,13 +35,6 @@ func main() {
 	InitApps()
 	DBMigrate()
 
-	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
-		On:       true,
-		DocTitle: "Iris",
-		DocPath:  "apidocs/apidoc.html",
-		BaseUrls: map[string]string{"Production": "", "Staging": ""},
-	})
-	app.Use(irisyaag.New()) // <- IMPORTANT, reg
 	requestLogger := logger.New(logger.Config{
 		Status:             true,
 		IP:                 true,

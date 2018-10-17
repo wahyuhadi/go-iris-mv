@@ -6,11 +6,24 @@ import (
 	"../controller"
 	"../middleware"
 
+	"github.com/betacraft/yaag/irisyaag"
+	"github.com/betacraft/yaag/yaag"
 	"github.com/kataras/iris"
 )
 
+type myXML struct {
+	Result string `xml:"result"`
+}
+
 func Routers() {
 	app := iris.New()
+	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
+		On:       true,
+		DocTitle: "Iris",
+		DocPath:  "apidocs/apidoc.html",
+		BaseUrls: map[string]string{"Production": "", "Staging": ""},
+	})
+	app.Use(irisyaag.New()) // <- IMPORTANT, reg
 
 	// for / endpoint
 	app.Get("/",
