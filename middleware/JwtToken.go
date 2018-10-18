@@ -2,12 +2,15 @@ package middleware
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/kataras/iris"
-	"os"
 )
 
-// decode token for user
+//---------------------------------------------------
+// Decode user Token
+//---------------------------------------------------
 func DecodeTokenUser(ctx iris.Context) {
 	var (
 		result iris.Map
@@ -29,7 +32,7 @@ func DecodeTokenUser(ctx iris.Context) {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 
-		return []byte(os.Getenv("SECRET")), nil
+		return []byte(os.Getenv("SECRET")), nil // get from .env
 	})
 
 	if err != nil {
@@ -46,5 +49,5 @@ func DecodeTokenUser(ctx iris.Context) {
 	for key, val := range claims {
 		ctx.Values().SetImmutable(key, val) //value  number has been change with float64
 	}
-	ctx.Next() // store value to next handler
+	ctx.Next() //Store  value ke next handler
 }
