@@ -1,13 +1,18 @@
-package controller
+package RequestController
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kataras/iris"
-	"../service"
 	"log"
+
+	"go-iris-mv/service"
+
+	"github.com/kataras/iris"
 )
 
+//---------------------------------------------------
+// Berikut adalah contoh hasil dari api yang akan diakses
+//---------------------------------------------------
 /**
 
 	example api get from url
@@ -44,6 +49,9 @@ import (
 
 **/
 
+//---------------------------------------------------
+// membuat file struct dari hasil
+//---------------------------------------------------
 // thanks to https://play.golang.org/p/rAJfkD1i7n or  https://stackoverflow.com/questions/34489887/go-unmarshal-json-nested-array-of-objects
 type DataPoeple struct {
 	Number int `json:"number"` // get field number from url
@@ -53,11 +61,13 @@ type DataPoeple struct {
 	} `json:"people"`
 }
 
+//---------------------------------------------------
+// Fungsi untuk Get HTTP
+//---------------------------------------------------
 func GetHttpReq(ctx iris.Context) {
 	var (
 		result iris.Map
 	)
-
 	data := service.HttpReqGet("http://api.open-notify.org/astros.json")
 	ctx.ReadJSON(&data)
 
@@ -71,7 +81,6 @@ func GetHttpReq(ctx iris.Context) {
 	fmt.Println(Data.Number)
 	fmt.Println(Data.People[0].Name) // yuou can check name in array ....
 
-	//result
 	result = iris.Map{
 		"code":   iris.StatusOK,
 		"result": Data,

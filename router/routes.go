@@ -1,6 +1,12 @@
+//---------------------------------------------------
+// function untuk handle router
+//---------------------------------------------------
+
 package router
 
 import (
+	"go-iris-mv/controller/RequestController"
+	"go-iris-mv/controller/UserController"
 	"os"
 
 	"../controller"
@@ -11,18 +17,19 @@ import (
 	"github.com/kataras/iris"
 )
 
-// ini digunakan untuk saat development
+//---------------------------------------------------
+// myXML digunkan untuk generate apidocs
+//---------------------------------------------------
 type myXML struct {
 	Result string `xml:"result"`
 }
 
 func Routers() {
 	app := iris.New()
-	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	/***
-		anda bisa menghapus ini jika sudah tahap production
-		modul ini digunakan untuk generate apidoc
-	***/
+	//---------------------------------------------------
+	//  anda bisa menghapus ini jika sudah tahap production
+	//	modul ini digunakan untuk generate apidoc
+	//---------------------------------------------------
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 		On:       true,
 		DocTitle: "Iris",
@@ -32,34 +39,43 @@ func Routers() {
 	app.Use(irisyaag.New()) // <- IMPORTANT, reg
 	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-	// for / endpoint
+	//---------------------------------------------------
+	// for root endpoint (/)
+	//---------------------------------------------------
 	app.Get("/",
 		middleware.WelcomeMiddleware,
 		middleware.SecondMiddleware,
 		controller.WelcomeController,
 	)
 
-	// example group: v1
+	//---------------------------------------------------
+	// for v1 endpoint (/v1/user)
+	//---------------------------------------------------
 	v1 := app.Party("/v1")
 	{
-		v1.Post("/user", controller.CreateUser)
-		v1.Post("/user/login", controller.Login)
-		v1.Get("/user", controller.GetAll)
-		v1.Get("/get_all", controller.GetAllUser)
-		v1.Get("/user/{id : int}", controller.GetById)
-		v1.Put("/user/{id : int}", controller.UpdateUser)
-		v1.Delete("/user/{id : int}", controller.DeleteUser)
+		v1.Post("/user", UserController.CreateUser)
+		v1.Post("/user/login", UserController.Login)
+		v1.Get("/user", UserController.GetAll)
+		v1.Get("/get_all", UserController.GetAllUser)
+		v1.Get("/user/{id : int}", UserController.GetById)
+		v1.Put("/user/{id : int}", UserController.UpdateUser)
+		v1.Delete("/user/{id : int}", UserController.DeleteUser)
 	}
 
+	//---------------------------------------------------
+	// for v1 endpoint (/v1/profile)
+	//---------------------------------------------------
 	profile := app.Party("/v1/profile")
 	{
-		profile.Post("/", middleware.DecodeTokenUser, controller.CreateProfile)
-
+		profile.Post("/", middleware.DecodeTokenUser, UserController.CreateProfile)
 	}
 
+	//---------------------------------------------------
+	// for v1 endpoint (/v1/http)
+	//---------------------------------------------------
 	http := app.Party("/v1/http")
 	{
-		http.Get("/", controller.GetHttpReq)
+		http.Get("/", RequestController.GetHttpReq)
 
 	}
 

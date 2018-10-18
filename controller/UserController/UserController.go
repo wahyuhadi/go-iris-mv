@@ -1,45 +1,51 @@
-package controller
+package UserController
 
 import (
 	"os"
 	"time"
 
-	"../config"
-	"../model"
-	"../service"
+	"go-iris-mv/config"
+	UserQuery "go-iris-mv/controller/UserController/UseCase"
+	"go-iris-mv/model"
+	"go-iris-mv/service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Create user
+//---------------------------------------------------
+// contoh penggunaan Create user
+//---------------------------------------------------
 func CreateUser(ctx iris.Context) {
 	var (
 		user model.User
 	)
 	ctx.ReadJSON(&user)
-	hash, _ := service.HashPassword(user.Password)
+	hash, _ := service.HashPassword(user.Password) // generate hash (bycrypt) password
 	user.Password = hash
-	user.Role = "user"
-	db := config.GetDatabaseConnection()
-	defer db.Close() // close connecion database to save memory
+	user.Role = "user"                   // penambahan Role untuk user
+	db := config.GetDatabaseConnection() // open connection
+	defer db.Close()                     // close connecion database to save memory
 	db.Create(&user)
 	ctx.JSON(iris.Map{
 		"error":  "false",
 		"status": iris.StatusOK,
 		"result": user,
 	})
+	return
 }
 
-// Login
+//---------------------------------------------------
+// Contoh penggunan login
+//---------------------------------------------------
 func Login(ctx iris.Context) {
 	var (
 		user   model.User
 		result iris.Map
 	)
 	ctx.ReadJSON(&user)
-	email := user.Email
+	email := user.Email // contoh pengambilan body
 	pass := user.Password
 	db := config.GetDatabaseConnection()
 	defer db.Close()
@@ -75,7 +81,7 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// compare password
+	// compare password jika sama dengan yang ada di database
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
 		result = iris.Map{
@@ -87,7 +93,9 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// To generate JWT token
+	//---------------------------------------------------
+	// Generate JWT token
+	//---------------------------------------------------
 	user.Password = ""
 	sign := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := make(jwt.MapClaims)
@@ -109,16 +117,23 @@ func Login(ctx iris.Context) {
 			"status":  iris.StatusOK,
 			"message": "success login",
 			"token":   token,
-			"role":    user.Role,
+			"role":    user.Role, // contoh perempalan token ke result
 		}
 	}
 	ctx.JSON(result)
 	return
 }
 
-// GetAllUser using goqueryset
+//---------------------------------------------------
+// contoh penggunakan getALL user menggunakan self service query
+//---------------------------------------------------
 func GetAllUser(ctx iris.Context) {
 
+	//---------------------------------------------------
+	// User struct , sebenarnya ini bisa diambil dari model.User
+	// namun agar menhilangkan fiels password buar struc baru
+	// seprti dibawah ini
+	//---------------------------------------------------
 	type User struct {
 		ID        int64         `json:"id" gorm:"primary_key"`
 		Role      string        `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
@@ -128,12 +143,13 @@ func GetAllUser(ctx iris.Context) {
 		DeletedAt *time.Time    `json:"deletedAt,omitempty" sql:"index"`
 		Profile   model.Profile `json:"profile"` // Get from model->Profile
 	}
+
 	var (
 		users  []User
 		result iris.Map
 	)
 
-	err := service.GetAll(&users)
+	err := UserQuery.GetAllAssociation(&users, "Profile") // pemaggilan service self query untuk association dengan profile
 	if err != nil {
 		result = iris.Map{
 			"error":  "true",
@@ -152,7 +168,9 @@ func GetAllUser(ctx iris.Context) {
 	return
 }
 
-// Get all user
+//---------------------------------------------------
+// contoh Get ALl user menggunakan Global Query
+//---------------------------------------------------
 func GetAll(ctx iris.Context) {
 
 	type User struct {
@@ -190,7 +208,9 @@ func GetAll(ctx iris.Context) {
 	return
 }
 
-// Get user by id
+//---------------------------------------------------
+// Contoh penggunakan function untuk get ByID
+//---------------------------------------------------
 func GetById(ctx iris.Context) {
 	var (
 		users  model.User
@@ -217,7 +237,9 @@ func GetById(ctx iris.Context) {
 	return
 }
 
-// Update user by id
+//---------------------------------------------------
+// Contoh penggunakan untuk update function
+//---------------------------------------------------
 func UpdateUser(ctx iris.Context) {
 	var (
 		user    model.User
@@ -257,7 +279,9 @@ func UpdateUser(ctx iris.Context) {
 	return
 }
 
-// Delete user by id
+//---------------------------------------------------
+// Contoh penggunakan delete user by ID
+//---------------------------------------------------
 func DeleteUser(ctx iris.Context) {
 	var (
 		user   model.User
@@ -296,7 +320,11 @@ func DeleteUser(ctx iris.Context) {
 	return
 }
 
-// create profile
+//---------------------------------------------------
+// Conntoh penggunan create profile
+// menggunakan middleware dari token
+// by ID
+//---------------------------------------------------
 func CreateProfile(ctx iris.Context) {
 	var (
 		profile model.Profile
@@ -305,7 +333,7 @@ func CreateProfile(ctx iris.Context) {
 	id := ctx.Values().Get("id") // get id from middleware
 	ctx.ReadJSON(&profile)
 	var userID int64
-	userID = int64(id.(float64))
+	userID = int64(id.(float64)) // contoh perubahan type dari integer ke int64
 	profile.UserID = userID
 	db := config.GetDatabaseConnection()
 	defer db.Close()
