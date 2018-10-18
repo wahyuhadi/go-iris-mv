@@ -11,12 +11,18 @@ import (
 	"github.com/kataras/iris"
 )
 
+// ini digunakan untuk saat development
 type myXML struct {
 	Result string `xml:"result"`
 }
 
 func Routers() {
 	app := iris.New()
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	/***
+		anda bisa menghapus ini jika sudah tahap production
+		modul ini digunakan untuk generate apidoc
+	***/
 	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
 		On:       true,
 		DocTitle: "Iris",
@@ -24,6 +30,7 @@ func Routers() {
 		BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
 	})
 	app.Use(irisyaag.New()) // <- IMPORTANT, reg
+	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	// for / endpoint
 	app.Get("/",
