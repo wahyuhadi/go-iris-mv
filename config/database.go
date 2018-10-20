@@ -4,7 +4,8 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	//_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var gormConn *gorm.DB
@@ -16,13 +17,13 @@ func GetDatabaseConnection() *gorm.DB { // Check Connection Status
 	}
 
 	conn, err := gorm.Open(os.Getenv("DB_DIALECT"), os.Getenv("DB_CONNECTION")) // Connection to database
-	conn.DB().SetMaxOpenConns(200)                                              // Sane default
-	conn.DB().SetMaxIdleConns(10)
+	// conn.DB().SetMaxOpenConns(200)                                              // Sane default
+	// conn.DB().SetMaxIdleConns(10)
 	//conn.DB().SetConnMaxLifetime(time.Nanosecond)
 	if err != nil {
-		panic("Could not connect to the database") // log error without close
+		panic(err) // log error without close
 	}
-	conn.LogMode(true)
+	//conn.LogMode(true)
 
 	gormConn = conn
 	return gormConn

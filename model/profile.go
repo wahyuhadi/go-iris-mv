@@ -17,5 +17,9 @@ type Profile struct {
 	CreatedAt *time.Time `json:"createdAt,omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 	DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
-	//User      User       `gorm:"foreignkey:UserRefer"`
+	User      User       `gorm:"foreignkey:UserRefer"`
+}
+
+func (Profile) TableName() string {
+	return "profiles" // table name when succesfully migrate
 }

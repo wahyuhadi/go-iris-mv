@@ -12,17 +12,15 @@ import (
 	"../controller"
 	"../middleware"
 
-	"github.com/betacraft/yaag/irisyaag"
-	"github.com/betacraft/yaag/yaag"
 	"github.com/kataras/iris"
 )
 
 //---------------------------------------------------
 // myXML digunkan untuk generate apidocs
 //---------------------------------------------------
-type myXML struct {
-	Result string `xml:"result"`
-}
+// type myXML struct {
+// 	Result string `xml:"result"`
+// }
 
 func Routers() {
 	app := iris.New()
@@ -30,13 +28,13 @@ func Routers() {
 	//  anda bisa menghapus ini jika sudah tahap production
 	//	modul ini digunakan untuk generate apidoc
 	//---------------------------------------------------
-	yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
-		On:       true,
-		DocTitle: "Iris",
-		DocPath:  "apidocs/index.html",
-		BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
-	})
-	app.Use(irisyaag.New()) // <- IMPORTANT, reg
+	// yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
+	// 	On:       true,
+	// 	DocTitle: "Iris",
+	// 	DocPath:  "apidocs/index.html",
+	// 	BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
+	// })
+	// app.Use(irisyaag.New()) // <- IMPORTANT, reg
 	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	//---------------------------------------------------

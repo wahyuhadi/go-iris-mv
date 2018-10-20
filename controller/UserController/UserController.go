@@ -134,14 +134,25 @@ func GetAllUser(ctx iris.Context) {
 	// namun agar menhilangkan fiels password buar struc baru
 	// seprti dibawah ini
 	//---------------------------------------------------
+	type Profile struct {
+		ID        int64      `json:"id" gorm:"primary_key"`
+		UserID    int64      `json:"user_id,omitempty" gorm:"type:bigint REFERENCES users(id)"`
+		Address   string     `json:"address,omitempty" gorm:"not null; type:varchar(100)"`
+		LastName  string     `json:"lastname,omitempty" gorm:"not null; type:varchar(100)"`
+		FirstName string     `json:"firstname,omitempty" gorm:"not null; type:varchar(100)"`
+		CreatedAt *time.Time `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
+	}
+
 	type User struct {
-		ID        int64         `json:"id" gorm:"primary_key"`
-		Role      string        `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
-		Email     string        `json:"email" gorm:"not null; size:255"`
-		CreatedAt *time.Time    `json:"createdAt,omitempty"`
-		UpdatedAt *time.Time    `json:"updatedAt,omitempty"`
-		DeletedAt *time.Time    `json:"deletedAt,omitempty" sql:"index"`
-		Profile   model.Profile `json:"profile"` // Get from model->Profile
+		ID        int64      `json:"id" gorm:"primary_key"`
+		Role      string     `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
+		Email     string     `json:"email" gorm:"not null; size:255"`
+		CreatedAt *time.Time `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
+		Profile   Profile    `json:"profile"` // Get from model->Profile
 	}
 
 	var (
@@ -174,13 +185,13 @@ func GetAllUser(ctx iris.Context) {
 func GetAll(ctx iris.Context) {
 
 	type User struct {
-		ID        int64         `json:"id" gorm:"primary_key"`
-		Role      string        `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
-		Email     string        `json:"email" gorm:"not null; size:255"`
-		CreatedAt *time.Time    `json:"createdAt,omitempty"`
-		UpdatedAt *time.Time    `json:"updatedAt,omitempty"`
-		DeletedAt *time.Time    `json:"deletedAt,omitempty" sql:"index"`
-		Profile   model.Profile `json:"profile"` // Get from model->Profile
+		ID        int64      `json:"id" gorm:"primary_key"`
+		Role      string     `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
+		Email     string     `json:"email" gorm:"not null; size:255"`
+		CreatedAt *time.Time `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
+		//Profile   Profile    `json:"profile"` // Get from model->Profile
 	}
 
 	var (
@@ -326,8 +337,19 @@ func DeleteUser(ctx iris.Context) {
 // by ID
 //---------------------------------------------------
 func CreateProfile(ctx iris.Context) {
+	type Profile struct {
+		ID        int64      `json:"id" gorm:"primary_key"`
+		UserID    int64      `json:"user_id,omitempty" gorm:"type:bigint REFERENCES users(id)"`
+		Address   string     `json:"address,omitempty" gorm:"not null; type:varchar(100)"`
+		LastName  string     `json:"lastname,omitempty" gorm:"not null; type:varchar(100)"`
+		FirstName string     `json:"firstname,omitempty" gorm:"not null; type:varchar(100)"`
+		CreatedAt *time.Time `json:"createdAt,omitempty"`
+		UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
+		//User      User       `gorm:"foreignkey:UserRefer"`
+	}
 	var (
-		profile model.Profile
+		profile Profile
 	)
 
 	id := ctx.Values().Get("id") // get id from middleware
