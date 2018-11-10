@@ -4,10 +4,6 @@ import (
 	"time"
 )
 
-//go:generate goqueryset -in user.go
-
-// User struct represent user model. Next line (gen:qs) is needed to autogenerate UserQuerySet.
-// gen:qs
 type User struct {
 	ID        int64      `json:"id" gorm:"primary_key"`
 	Role      string     `json:"role,omitempty" gorm:"not null"`

@@ -14,19 +14,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-//---------------------------------------------------
-// contoh penggunaan Create user
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Create Users
+**********************************************************/
 func CreateUser(ctx iris.Context) {
 	var (
 		user model.User
 	)
 	ctx.ReadJSON(&user)
-	hash, _ := service.HashPassword(user.Password) // generate hash (bycrypt) password
+	hash, _ := service.HashPassword(user.Password) /*  generate hash with bycryp */
 	user.Password = hash
-	user.Role = "user"                   // penambahan Role untuk user
-	db := config.GetDatabaseConnection() // open connection
-	defer db.Close()                     // close connecion database to save memory
+	user.Role = "user"                   /*  add user role */
+	db := config.GetDatabaseConnection() /*  Open connectins */
+	defer db.Close()
 	db.Create(&user)
 	ctx.JSON(iris.Map{
 		"error":  "false",
@@ -36,16 +37,17 @@ func CreateUser(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// Contoh penggunan login
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Login
+**********************************************************/
 func Login(ctx iris.Context) {
 	var (
 		user   model.User
 		result iris.Map
 	)
 	ctx.ReadJSON(&user)
-	email := user.Email // contoh pengambilan body
+	email := user.Email /* get Email from body */
 	pass := user.Password
 	db := config.GetDatabaseConnection()
 	defer db.Close()
@@ -60,7 +62,7 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// if email not found
+	/*  Email Not Found */
 	if user.ID == 0 {
 		result = iris.Map{
 			"error":   "true",
@@ -81,9 +83,9 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	// compare password jika sama dengan yang ada di database
+	/*  Compare password */
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(pass))
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { //Password does not match!
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword { /*  Password tidak sesuai */
 		result = iris.Map{
 			"error":   "true",
 			"status":  iris.StatusBadRequest,
@@ -93,9 +95,7 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	//---------------------------------------------------
-	// Generate JWT token
-	//---------------------------------------------------
+	/*  Generate JWT token */
 	user.Password = ""
 	sign := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := make(jwt.MapClaims)
@@ -117,23 +117,24 @@ func Login(ctx iris.Context) {
 			"status":  iris.StatusOK,
 			"message": "success login",
 			"token":   token,
-			"role":    user.Role, // contoh perempalan token ke result
+			"role":    user.Role, /*  token  */
 		}
 	}
 	ctx.JSON(result)
 	return
 }
 
-//---------------------------------------------------
-// contoh penggunakan getALL user menggunakan self service query
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : get all user menggunakan self qeury
+**********************************************************/
 func GetAllUser(ctx iris.Context) {
 
-	//---------------------------------------------------
-	// User struct , sebenarnya ini bisa diambil dari model.User
-	// namun agar menhilangkan fiels password buar struc baru
-	// seprti dibawah ini
-	//---------------------------------------------------
+	/*********************************************************
+	| Created By : @wahyuhadi
+	| Desc : Profile and user struct
+	**********************************************************/
+	/*  Profile struct */
 	type Profile struct {
 		ID        int64      `json:"id" gorm:"primary_key"`
 		UserID    int64      `json:"user_id,omitempty" gorm:"type:bigint REFERENCES users(id)"`
@@ -145,6 +146,7 @@ func GetAllUser(ctx iris.Context) {
 		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
 	}
 
+	/*  User */
 	type User struct {
 		ID        int64      `json:"id" gorm:"primary_key"`
 		Role      string     `json:"role,omitempty" gorm:"not null; type:ENUM('admin', 'user', 'root')"`
@@ -152,7 +154,7 @@ func GetAllUser(ctx iris.Context) {
 		CreatedAt *time.Time `json:"createdAt,omitempty"`
 		UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 		DeletedAt *time.Time `json:"deletedAt,omitempty" sql:"index"`
-		Profile   Profile    `json:"profile"` // Get from model->Profile
+		Profile   Profile    `json:"profile"` /*  get from model */
 	}
 
 	var (
@@ -179,9 +181,10 @@ func GetAllUser(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// contoh Get ALl user menggunakan Global Query
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Get all User witj Global Query
+**********************************************************/
 func GetAll(ctx iris.Context) {
 
 	type User struct {
@@ -195,7 +198,7 @@ func GetAll(ctx iris.Context) {
 	}
 
 	var (
-		users  []User // [] for array result
+		users  []User /*  Array result */
 		result iris.Map
 	)
 
@@ -219,9 +222,10 @@ func GetAll(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// Contoh penggunakan function untuk get ByID
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Get user by Id
+**********************************************************/
 func GetById(ctx iris.Context) {
 	var (
 		users  model.User
@@ -248,16 +252,17 @@ func GetById(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// Contoh penggunakan untuk update function
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Update User
+**********************************************************/
 func UpdateUser(ctx iris.Context) {
 	var (
 		user    model.User
 		newUser model.User
 		result  iris.Map
 	)
-	id := ctx.Params().Get("id") // get id by params
+	id := ctx.Params().Get("id") /*  get id in params */
 	db := config.GetDatabaseConnection()
 	defer db.Close()
 	err := db.First(&user, id).Error
@@ -290,9 +295,10 @@ func UpdateUser(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// Contoh penggunakan delete user by ID
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Delete user By id
+**********************************************************/
 func DeleteUser(ctx iris.Context) {
 	var (
 		user   model.User
@@ -331,11 +337,10 @@ func DeleteUser(ctx iris.Context) {
 	return
 }
 
-//---------------------------------------------------
-// Conntoh penggunan create profile
-// menggunakan middleware dari token
-// by ID
-//---------------------------------------------------
+/*********************************************************
+| Created By : @wahyuhadi
+| Desc : Create Profile
+**********************************************************/
 func CreateProfile(ctx iris.Context) {
 	type Profile struct {
 		ID        int64      `json:"id" gorm:"primary_key"`

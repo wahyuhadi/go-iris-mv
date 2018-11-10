@@ -1,54 +1,51 @@
-//---------------------------------------------------
-// function untuk handle router
-//---------------------------------------------------
-
 package router
 
 import (
+	"go-iris-mv/controller"
 	"go-iris-mv/controller/RequestController"
 	"go-iris-mv/controller/UserController"
+	"go-iris-mv/middleware"
 	"os"
-
-	"../controller"
-	"../middleware"
 
 	"github.com/kataras/iris"
 )
 
-//---------------------------------------------------
-// myXML digunkan untuk generate apidocs
-//---------------------------------------------------
-// type myXML struct {
-// 	Result string `xml:"result"`
-// }
+/*
+type myXML struct {
+	Result string `xml:"result"`
+}
+*/
 
 func Routers() {
 	app := iris.New()
-	//---------------------------------------------------
-	//  anda bisa menghapus ini jika sudah tahap production
-	//	modul ini digunakan untuk generate apidoc
-	//---------------------------------------------------
-	// yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
-	// 	On:       true,
-	// 	DocTitle: "Iris",
-	// 	DocPath:  "apidocs/index.html",
-	// 	BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
-	// })
-	// app.Use(irisyaag.New()) // <- IMPORTANT, reg
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	/*********************************************************
+	| Created By : @wahyuhadi
+	| Desc : for generate api doc
+	**********************************************************/
 
-	//---------------------------------------------------
-	// for root endpoint (/)
-	//---------------------------------------------------
+	/*
+		yaag.Init(&yaag.Config{ // <- IMPORTANT, init the middleware.
+			On:       true,
+			DocTitle: "Iris",
+			DocPath:  "apidocs/index.html",
+			BaseUrls: map[string]string{"Production": "", "Staging": "", "Development": "localhost:3000"},
+		})
+		app.Use(irisyaag.New()) // <- IMPORTANT, reg
+	*/
+
+	/*********************************************************
+	| for root endpoint (/)
+	**********************************************************/
 	app.Get("/",
 		middleware.WelcomeMiddleware,
 		middleware.SecondMiddleware,
 		controller.WelcomeController,
 	)
 
-	//---------------------------------------------------
-	// for v1 endpoint (/v1/user)
-	//---------------------------------------------------
+	/*********************************************************
+	| Created By : @wahyuhadi
+	| Desc : for users router
+	**********************************************************/
 	v1 := app.Party("/v1")
 	{
 		v1.Post("/user", UserController.CreateUser)
@@ -60,22 +57,22 @@ func Routers() {
 		v1.Delete("/user/{id : int}", UserController.DeleteUser)
 	}
 
-	//---------------------------------------------------
-	// for v1 endpoint (/v1/profile)
-	//---------------------------------------------------
+	/*********************************************************
+	| Created By : @wahyuhadi
+	| Desc : for profile routers
+	**********************************************************/
 	profile := app.Party("/v1/profile")
 	{
 		profile.Post("/", middleware.DecodeTokenUser, UserController.CreateProfile)
 	}
 
-	//---------------------------------------------------
-	// for v1 endpoint (/v1/http)
-	//---------------------------------------------------
+	/*********************************************************
+	| Created By : @wahyuhadi
+	| Desc : for http
+	**********************************************************/
 	http := app.Party("/v1/http")
 	{
 		http.Get("/", RequestController.GetHttpReq)
-
 	}
-
-	app.Run(iris.Addr(":" + os.Getenv("API_PORT"))) // starter handler untuk route
+	app.Run(iris.Addr(":" + os.Getenv("API_PORT")))
 }
